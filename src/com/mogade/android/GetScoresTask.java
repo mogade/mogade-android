@@ -51,5 +51,4 @@ public class GetScoresTask extends AsyncTask<Void,Void,Void> {
 	public int getRecords() {
 		return records;
 	}
-
 }
