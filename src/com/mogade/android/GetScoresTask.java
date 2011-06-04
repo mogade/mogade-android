@@ -31,7 +31,7 @@ public class GetScoresTask extends AsyncTask<Void,Void,Void> {
 	}
 
 	public GetScoresTask setPage(int value) {
-		Guard.GreaterThanZero(value, "Invalid parge. Page must be greater than zero.");
+		Guard.GreaterThanZero(value, "Invalid page. Page must be greater than zero.");
 		this.page = value;
 		
 		return this;
