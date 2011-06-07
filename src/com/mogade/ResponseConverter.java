@@ -8,6 +8,7 @@ public interface ResponseConverter<T> {
      *
      * @param source The json object
      * @return The parsed instance
+     * @throws Exception An exception that was thrown during the conversion
      */
-    public T convert(JSONObject source);
+    public T convert(JSONObject source) throws Exception;
 }
