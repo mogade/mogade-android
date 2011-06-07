@@ -1,22 +1,79 @@
 package com.mogade.impl;
 
 import com.mogade.Driver;
+import com.mogade.Guard;
 import com.mogade.Response;
 import com.mogade.ResponseConverter;
 import com.mogade.models.LeaderboardScores;
+import com.mogade.models.Ranks;
 import com.mogade.models.Score;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DefaultDriver implements Driver {
+    private final String gameKey;
+    private final String secret;
+
+    public DefaultDriver(String gameKey, String secret) {
+        Guard.NotNullOrEmpty(gameKey, "Game key is required.");
+        Guard.NotNullOrEmpty(secret, "Secret is required.");
+
+        this.gameKey = gameKey;
+        this.secret = secret;
+    }
+
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+
+    public Response<LeaderboardScores> getLeaderboard(String leaderboardId, int scope, int page, int records) {
+
+        DefaultCommunicator communicator = new DefaultCommunicator();
+        Map<String, String> parameters = new HashMap<String, String>();
+        parameters.put("lid", leaderboardId);
+        parameters.put("scope", Integer.toString(scope));
+        parameters.put("page", Integer.toString(page));
+        parameters.put("records", Integer.toString(records));
+
+        return communicator.get("scores", parameters, LEADERBOARD_CONVERTER);
+    }
+
+    public Response<Ranks> submitScore(String leaderboardId, String uniqueIdentifier, Score score) {
+        DefaultCommunicator communicator = new DefaultCommunicator();
+        Map<String, String> parameters = new HashMap<String, String>();
+        parameters.put("lid", leaderboardId);
+        parameters.put("username", score.getUsername());
+        parameters.put("userkey", uniqueIdentifier);
+        parameters.put("points", Integer.toString(score.getPoints()));
+        parameters.put("data", score.getData());
+
+        return communicator.post("scores", getSignedParameters(parameters), RANKS_CONVERTER);
+    }
+
+    private Map<String, String> getSignedParameters(Map<String, String> parameters) {
+        SortedMap<String, String> signed = new TreeMap<String, String>(parameters);
+
+        StringBuilder signature = new StringBuilder();
+        for (Map.Entry<String, String> parameter : signed.entrySet()) {
+            signature.append(parameter.getKey());
+            signature.append("|");
+            signature.append(parameter.getValue());
+            signature.append("|");
+        }
+
+        signature.append(secret);
+
+        return null;
+    }
+
+    private static final ResponseConverter<Ranks> RANKS_CONVERTER = new ResponseConverter<Ranks>() {
+        public Ranks convert(JSONObject source) throws Exception {
+            return null;
+        }
+    };
+
     private static final ResponseConverter<LeaderboardScores> LEADERBOARD_CONVERTER = new ResponseConverter<LeaderboardScores>() {
         public LeaderboardScores convert(JSONObject source) throws Exception {
             LeaderboardScores scores = new LeaderboardScores();
@@ -40,16 +97,4 @@ public class DefaultDriver implements Driver {
             return scores;
         }
     };
-
-    public Response<LeaderboardScores> GetLeaderboard(String leaderboardId, int scope, int page, int records) {
-
-        DefaultCommunicator communicator = new DefaultCommunicator();
-        Map<String, String> parameters = new HashMap<String, String>();
-        parameters.put("lid", leaderboardId);
-        parameters.put("scope", Integer.toString(scope));
-        parameters.put("page", Integer.toString(page));
-        parameters.put("records", Integer.toString(records));
-
-        return communicator.Get("scores", parameters, LEADERBOARD_CONVERTER);
-    }
 }

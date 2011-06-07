@@ -11,12 +11,16 @@ import org.json.JSONObject;
 import java.util.Map;
 
 public class DefaultCommunicator {
-    public <T> Response<T> Get(String endpoint, Map<String, String> parameters, ResponseConverter<T> converter) {
+    public <T> Response<T> get(String endpoint, Map<String, String> parameters, ResponseConverter<T> converter) {
 
         return null;
     }
 
-    private <T> Response<T> ExecuteRequest(HttpUriRequest request, ResponseConverter<T> converter) {
+    public <T> Response<T> post(String endpoint, Map<String, String> parameters, ResponseConverter<T> converter) {
+        return null;
+    }
+
+    private <T> Response<T> executeRequest(HttpUriRequest request, ResponseConverter<T> converter) {
         BasicResponse<T> result = new BasicResponse<T>();
         DefaultHttpClient client = new DefaultHttpClient();
 

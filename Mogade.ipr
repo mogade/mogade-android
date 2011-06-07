@@ -181,6 +181,13 @@
       </item>
     </group>
   </component>
+  <component name="ProjectDictionaryState">
+    <dictionary name="dkopp">
+      <words>
+        <w>leaderboard</w>
+      </words>
+    </dictionary>
+  </component>
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Mogade-android.iml" filepath="$PROJECT_DIR$/Mogade-android.iml" />
