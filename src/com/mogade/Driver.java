@@ -5,6 +5,8 @@ import com.mogade.models.LeaderboardScores;
 import com.mogade.models.Ranks;
 import com.mogade.models.Score;
 
+import java.util.List;
+
 public interface Driver {
     /**
      * Retrieves the list of scores for a leaderboard
@@ -70,6 +72,15 @@ public interface Driver {
      * @return The ranks for the user
      */
     Response<Ranks> getRanks(String leaderboardId, String username, String uniqueIdentifier, int[] scopes);
+
+    /**
+     * Gets the achievements that have been earned by a specific user
+     *
+     * @param username         The username for the user to retrieve the achievements for
+     * @param uniqueIdentifier The id of the user
+     * @return The list of achievements that have been earned by the user.
+     */
+    Response<List<Achievement>> getEarnedAchievements(String username, String uniqueIdentifier);
 
     /**
      * Records that a user earned the specified achievement

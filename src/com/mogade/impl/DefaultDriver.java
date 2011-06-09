@@ -1,9 +1,6 @@
 package com.mogade.impl;
 
-import com.mogade.Driver;
-import com.mogade.Guard;
-import com.mogade.Response;
-import com.mogade.ResponseConverter;
+import com.mogade.*;
 import com.mogade.models.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -109,6 +106,16 @@ public class DefaultDriver implements Driver {
         return communicator.post("achievements", getSignedParameters(parameters), ACHIEVEMENT_CONVERTER);
     }
 
+    public Response<List<Achievement>> getEarnedAchievements(String username, String uniqueIdentifier) {
+        DefaultCommunicator communicator = new DefaultCommunicator();
+        Map<String, String> parameters = new HashMap<String, String>();
+        parameters.put("username", username);
+        parameters.put("userKey", uniqueIdentifier);
+        parameters.put("key", gameKey);
+
+        return communicator.get("achievements", parameters, ACHIEVEMENT_LIST_CONVERTER);
+    }
+
     private Map<String, String> getSignedParameters(Map<String, String> parameters) {
         SortedMap<String, String> signed = new TreeMap<String, String>(parameters);
 
@@ -121,6 +128,21 @@ public class DefaultDriver implements Driver {
     private static String encodeArray(int[] items) {
         return "????";
     }
+
+    private static final ArrayResponseConverter<List<Achievement>> ACHIEVEMENT_LIST_CONVERTER = new ArrayResponseConverter<List<Achievement>>() {
+        public List<Achievement> convert(JSONArray source) throws Exception {
+            int length = source.length();
+            List<Achievement> results = new ArrayList<Achievement>(length);
+            for (int i = 0; i < length; i++) {
+                Achievement achievement = new Achievement();
+                achievement.setId(source.getString(i));
+
+                results.add(achievement);
+            }
+
+            return results;
+        }
+    };
 
     private static final ResponseConverter<Ranks> RANKS_CONVERTER = new ResponseConverter<Ranks>() {
         public Ranks convert(JSONObject source) throws Exception {

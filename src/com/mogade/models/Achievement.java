@@ -2,7 +2,7 @@ package com.mogade.models;
 
 public class Achievement {
     private String id;
-    private int points;
+    private int points = 0;
 
     public String getId() {
         return id;
