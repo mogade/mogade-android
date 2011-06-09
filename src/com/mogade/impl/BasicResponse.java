@@ -28,4 +28,11 @@ public class BasicResponse<T> implements Response<T> {
         this.error = error;
         successful = false;
     }
+
+    public static <T> Response<T> failure(ErrorMessage error) {
+        BasicResponse<T> response = new BasicResponse<T>();
+        response.setError(error);
+
+        return response;
+    }
 }

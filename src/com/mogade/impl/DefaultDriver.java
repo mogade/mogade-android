@@ -4,6 +4,7 @@ import com.mogade.Driver;
 import com.mogade.Guard;
 import com.mogade.Response;
 import com.mogade.ResponseConverter;
+import com.mogade.models.LeaderboardScope;
 import com.mogade.models.LeaderboardScores;
 import com.mogade.models.Ranks;
 import com.mogade.models.Score;
@@ -65,13 +66,37 @@ public class DefaultDriver implements Driver {
         return communicator.post("scores", getSignedParameters(parameters), RANKS_CONVERTER);
     }
 
-    public Response<Ranks> getRank(String leaderboardId, String username, String uniqueIdentifier, int scope) {
+    public Response<Integer> getRank(String leaderboardId, String username, String uniqueIdentifier, final int scope) {
         DefaultCommunicator communicator = new DefaultCommunicator();
         Map<String, String> parameters = new HashMap<String, String>();
         parameters.put("lid", leaderboardId);
         parameters.put("username", username);
         parameters.put("userkey", uniqueIdentifier);
-        parameters.put("scope", Integer.toString(scope));
+        parameters.put("scopes", Integer.toString(scope));
+
+        ResponseConverter<Integer> converter = new ResponseConverter<Integer>() {
+            public Integer convert(JSONObject source) throws Exception {
+                Ranks rank = RANKS_CONVERTER.convert(source);
+
+                return Ranks.getRankByScope(rank, scope);
+            }
+        };
+
+        return communicator.get("ranks", parameters, converter);
+    }
+
+    public Response<Ranks> getRanks(String leaderboardId, String username, String uniqueIdentifier) {
+        int[] scopes = new int[]{LeaderboardScope.DAILY, LeaderboardScope.OVERALL, LeaderboardScope.WEEKLY, LeaderboardScope.YESTERDAY};
+        return getRanks(leaderboardId, username, uniqueIdentifier, scopes);
+    }
+
+    public Response<Ranks> getRanks(String leaderboardId, String username, String uniqueIdentifier, int[] scopes) {
+        DefaultCommunicator communicator = new DefaultCommunicator();
+        Map<String, String> parameters = new HashMap<String, String>();
+        parameters.put("lid", leaderboardId);
+        parameters.put("username", username);
+        parameters.put("userkey", uniqueIdentifier);
+        parameters.put("scopes", encodeArray(scopes));
 
         return communicator.get("ranks", parameters, RANKS_CONVERTER);
     }
@@ -83,6 +108,10 @@ public class DefaultDriver implements Driver {
         result.put("sig", SignatureGenerator.generate(signed, secret));
 
         return result;
+    }
+
+    private static String encodeArray(int[] items) {
+        return "????";
     }
 
     private static final ResponseConverter<Ranks> RANKS_CONVERTER = new ResponseConverter<Ranks>() {

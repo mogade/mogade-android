@@ -47,5 +47,26 @@ public interface Driver {
      * @param scope            The scope to limit the ranking to
      * @return The ranks for the user
      */
-    Response<Ranks> getRank(String leaderboardId, String username, String uniqueIdentifier, int scope);
+    Response<Integer> getRank(String leaderboardId, String username, String uniqueIdentifier, int scope);
+
+    /**
+     * Retrieves the ranks for a user on a specific leaderboard.
+     *
+     * @param leaderboardId    The id of the leaderboard
+     * @param username         The username for the user
+     * @param uniqueIdentifier The unique identifier for the user
+     * @return The ranks for the user
+     */
+    Response<Ranks> getRanks(String leaderboardId, String username, String uniqueIdentifier);
+
+    /**
+     * Retrieves the ranks for a user on a specific leaderboard.
+     *
+     * @param leaderboardId    The id of the leaderboard
+     * @param username         The username for the user
+     * @param uniqueIdentifier The unique identifier for the user
+     * @param scopes           The scopes to limit the ranks to
+     * @return The ranks for the user
+     */
+    Response<Ranks> getRanks(String leaderboardId, String username, String uniqueIdentifier, int[] scopes);
 }
