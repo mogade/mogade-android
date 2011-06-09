@@ -22,7 +22,7 @@ public interface Driver {
      * @param leaderboardId    The id for the leaderboard to retrieve
      * @param scope            The scope to limit the scores to
      * @param username         The username to limit the scores by
-     * @param uniqueIdentifier The unique identifier to limit the scores by
+     * @param uniqueIdentifier The unique identifier of the user to limit the scores by
      * @param records          How many scores should be returned
      * @return The response with the leaderboard scores
      */
@@ -32,9 +32,20 @@ public interface Driver {
      * Submits a score to the specified leaderboard
      *
      * @param leaderboardId    The leaderboard to submit the score to
-     * @param uniqueIdentifier The unique identifier for the score
+     * @param uniqueIdentifier The unique identifier of the user
      * @param score            The score data
      * @return The ranks
      */
     Response<Ranks> submitScore(String leaderboardId, String uniqueIdentifier, Score score);
+
+    /**
+     * Retrieves the ranks for a user on a specific leaderboard.
+     *
+     * @param leaderboardId    The id of the leaderboard
+     * @param username         The username for the user
+     * @param uniqueIdentifier The unique identifier for the user
+     * @param scope            The scope to limit the ranking to
+     * @return The ranks for the user
+     */
+    Response<Ranks> getRank(String leaderboardId, String username, String uniqueIdentifier, int scope);
 }

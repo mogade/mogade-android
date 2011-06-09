@@ -65,6 +65,17 @@ public class DefaultDriver implements Driver {
         return communicator.post("scores", getSignedParameters(parameters), RANKS_CONVERTER);
     }
 
+    public Response<Ranks> getRank(String leaderboardId, String username, String uniqueIdentifier, int scope) {
+        DefaultCommunicator communicator = new DefaultCommunicator();
+        Map<String, String> parameters = new HashMap<String, String>();
+        parameters.put("lid", leaderboardId);
+        parameters.put("username", username);
+        parameters.put("userkey", uniqueIdentifier);
+        parameters.put("scope", Integer.toString(scope));
+
+        return communicator.get("ranks", parameters, RANKS_CONVERTER);
+    }
+
     private Map<String, String> getSignedParameters(Map<String, String> parameters) {
         SortedMap<String, String> signed = new TreeMap<String, String>(parameters);
 
