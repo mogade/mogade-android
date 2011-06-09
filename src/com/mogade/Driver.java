@@ -17,6 +17,18 @@ public interface Driver {
     Response<LeaderboardScores> getLeaderboard(String leaderboardId, int scope, int page, int records);
 
     /**
+     * Retrieves the list of scores for a leaderboard for a specific user.
+     *
+     * @param leaderboardId    The id for the leaderboard to retrieve
+     * @param scope            The scope to limit the scores to
+     * @param username         The username to limit the scores by
+     * @param uniqueIdentifier The unique identifier to limit the scores by
+     * @param records          How many scores should be returned
+     * @return The response with the leaderboard scores
+     */
+    Response<LeaderboardScores> getLeaderboard(String leaderboardId, int scope, String username, String uniqueIdentifier, int records);
+
+    /**
      * Submits a score to the specified leaderboard
      *
      * @param leaderboardId    The leaderboard to submit the score to

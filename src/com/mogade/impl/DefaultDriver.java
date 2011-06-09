@@ -40,6 +40,18 @@ public class DefaultDriver implements Driver {
         return communicator.get("scores", parameters, LEADERBOARD_CONVERTER);
     }
 
+    public Response<LeaderboardScores> getLeaderboard(String leaderboardId, int scope, String username, String uniqueIdentifier, int records) {
+        DefaultCommunicator communicator = new DefaultCommunicator();
+        Map<String, String> parameters = new HashMap<String, String>();
+        parameters.put("lid", leaderboardId);
+        parameters.put("scope", Integer.toString(scope));
+        parameters.put("username", username);
+        parameters.put("userKey", uniqueIdentifier);
+        parameters.put("records", Integer.toString(records));
+
+        return communicator.get("scores", parameters, LEADERBOARD_CONVERTER);
+    }
+
     public Response<Ranks> submitScore(String leaderboardId, String uniqueIdentifier, Score score) {
         DefaultCommunicator communicator = new DefaultCommunicator();
         Map<String, String> parameters = new HashMap<String, String>();
