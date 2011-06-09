@@ -48,6 +48,7 @@ public class DefaultDriver implements Driver {
         parameters.put("userkey", uniqueIdentifier);
         parameters.put("points", Integer.toString(score.getPoints()));
         parameters.put("data", score.getData());
+        parameters.put("key", gameKey);
 
         return communicator.post("scores", getSignedParameters(parameters), RANKS_CONVERTER);
     }
@@ -55,22 +56,21 @@ public class DefaultDriver implements Driver {
     private Map<String, String> getSignedParameters(Map<String, String> parameters) {
         SortedMap<String, String> signed = new TreeMap<String, String>(parameters);
 
-        StringBuilder signature = new StringBuilder();
-        for (Map.Entry<String, String> parameter : signed.entrySet()) {
-            signature.append(parameter.getKey());
-            signature.append("|");
-            signature.append(parameter.getValue());
-            signature.append("|");
-        }
+        Map<String, String> result = new HashMap<String, String>(parameters);
+        result.put("sig", SignatureGenerator.generate(signed, secret));
 
-        signature.append(secret);
-
-        return null;
+        return result;
     }
 
     private static final ResponseConverter<Ranks> RANKS_CONVERTER = new ResponseConverter<Ranks>() {
         public Ranks convert(JSONObject source) throws Exception {
-            return null;
+            Ranks result = new Ranks();
+            result.daily = source.getInt("daily");
+            result.overall = source.getInt("overall");
+            result.weekly = source.getInt("weekly");
+            result.yesterday = source.getInt("yesterday");
+
+            return result;
         }
     };
 
