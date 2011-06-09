@@ -4,10 +4,7 @@ import com.mogade.Driver;
 import com.mogade.Guard;
 import com.mogade.Response;
 import com.mogade.ResponseConverter;
-import com.mogade.models.LeaderboardScope;
-import com.mogade.models.LeaderboardScores;
-import com.mogade.models.Ranks;
-import com.mogade.models.Score;
+import com.mogade.models.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -101,6 +98,17 @@ public class DefaultDriver implements Driver {
         return communicator.get("ranks", parameters, RANKS_CONVERTER);
     }
 
+    public Response<Achievement> achievementEarned(String achievementId, String username, String uniqueIdentifier) {
+        DefaultCommunicator communicator = new DefaultCommunicator();
+        Map<String, String> parameters = new HashMap<String, String>();
+        parameters.put("aid", achievementId);
+        parameters.put("username", username);
+        parameters.put("userKey", uniqueIdentifier);
+        parameters.put("key", gameKey);
+
+        return communicator.post("achievements", getSignedParameters(parameters), ACHIEVEMENT_CONVERTER);
+    }
+
     private Map<String, String> getSignedParameters(Map<String, String> parameters) {
         SortedMap<String, String> signed = new TreeMap<String, String>(parameters);
 
@@ -147,6 +155,16 @@ public class DefaultDriver implements Driver {
 
             scores.setScores(scoreList);
             return scores;
+        }
+    };
+
+    private static final ResponseConverter<Achievement> ACHIEVEMENT_CONVERTER = new ResponseConverter<Achievement>() {
+        public Achievement convert(JSONObject source) throws Exception {
+            Achievement achievement = new Achievement();
+            achievement.setId(source.getString("id"));
+            achievement.setPoints(source.getInt("points"));
+
+            return achievement;
         }
     };
 }

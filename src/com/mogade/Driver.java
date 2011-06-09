@@ -1,5 +1,6 @@
 package com.mogade;
 
+import com.mogade.models.Achievement;
 import com.mogade.models.LeaderboardScores;
 import com.mogade.models.Ranks;
 import com.mogade.models.Score;
@@ -69,4 +70,14 @@ public interface Driver {
      * @return The ranks for the user
      */
     Response<Ranks> getRanks(String leaderboardId, String username, String uniqueIdentifier, int[] scopes);
+
+    /**
+     * Records that a user earned the specified achievement
+     *
+     * @param achievementId    The identifier of the achievement that was earned.
+     * @param username         The username of the user who earned the achievement
+     * @param uniqueIdentifier The id of the user who earned the achievement
+     * @return The achievement
+     */
+    Response<Achievement> achievementEarned(String achievementId, String username, String uniqueIdentifier);
 }
