@@ -25,7 +25,7 @@ public class SignatureGenerator {
         try {
 
             byte[] hashed = MessageDigest.getInstance("SHA-1").digest(value.getBytes("UTF-8"));
-            StringBuilder builder = new StringBuilder();
+            StringBuilder builder = new StringBuilder(hashed.length * 2);
             for (int i = 0; i < hashed.length; i++) {
                 builder.append(String.format("%1$x", hashed[i]));
             }
