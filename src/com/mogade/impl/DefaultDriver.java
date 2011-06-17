@@ -91,7 +91,8 @@ public class DefaultDriver implements Driver {
         addParameter(parameters, "lid", leaderboardId);
         addParameter(parameters, "username", username);
         addParameter(parameters, "userkey", uniqueIdentifier);
-        addParameter(parameters, "scopes", encodeArray(scopes));
+        for (int scope : scopes)
+            addArrayParameter(parameters, "scopes[]", Integer.toString(scope));
 
         return communicator.get("ranks", parameters, RANKS_CONVERTER);
     }
@@ -121,13 +122,9 @@ public class DefaultDriver implements Driver {
         SortedMap<String, Object> signed = new TreeMap<String, Object>(parameters);
 
         Map<String, Object> result = new HashMap<String, Object>(parameters);
-        result.put("sig", SignatureGenerator.generate(signed, secret));
+        addParameter(result, "sig", SignatureGenerator.generate(signed, secret));
 
         return result;
-    }
-
-    private static String encodeArray(int[] items) {
-        return "????";
     }
 
     private static void addArrayParameter(Map<String, Object> parameters, String key, String value) {
