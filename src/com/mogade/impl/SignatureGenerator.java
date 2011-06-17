@@ -7,9 +7,9 @@ import java.util.Map;
 import java.util.SortedMap;
 
 public class SignatureGenerator {
-    public static String generate(SortedMap<String, String> parameters, String secret) {
+    public static String generate(SortedMap<String, Object> parameters, String secret) {
         StringBuilder signature = new StringBuilder();
-        for (Map.Entry<String, String> parameter : parameters.entrySet()) {
+        for (Map.Entry<String, Object> parameter : parameters.entrySet()) {
             signature.append(parameter.getKey());
             signature.append("|");
             signature.append(parameter.getValue());

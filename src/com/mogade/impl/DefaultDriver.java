@@ -26,47 +26,48 @@ public class DefaultDriver implements Driver {
     public Response<LeaderboardScores> getLeaderboard(String leaderboardId, int scope, int page, int records) {
 
         DefaultCommunicator communicator = new DefaultCommunicator();
-        Map<String, String> parameters = new HashMap<String, String>();
-        parameters.put("lid", leaderboardId);
-        parameters.put("scope", Integer.toString(scope));
-        parameters.put("page", Integer.toString(page));
-        parameters.put("records", Integer.toString(records));
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        addParameter(parameters, "lid", leaderboardId);
+        addParameter(parameters, "lid", leaderboardId);
+        addParameter(parameters, "scope", Integer.toString(scope));
+        addParameter(parameters, "page", Integer.toString(page));
+        addParameter(parameters, "records", Integer.toString(records));
 
         return communicator.get("scores", parameters, LEADERBOARD_CONVERTER);
     }
 
     public Response<LeaderboardScores> getLeaderboard(String leaderboardId, int scope, String username, String uniqueIdentifier, int records) {
         DefaultCommunicator communicator = new DefaultCommunicator();
-        Map<String, String> parameters = new HashMap<String, String>();
-        parameters.put("lid", leaderboardId);
-        parameters.put("scope", Integer.toString(scope));
-        parameters.put("username", username);
-        parameters.put("userKey", uniqueIdentifier);
-        parameters.put("records", Integer.toString(records));
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        addParameter(parameters, "lid", leaderboardId);
+        addParameter(parameters, "scope", Integer.toString(scope));
+        addParameter(parameters, "username", username);
+        addParameter(parameters, "userKey", uniqueIdentifier);
+        addParameter(parameters, "records", Integer.toString(records));
 
         return communicator.get("scores", parameters, LEADERBOARD_CONVERTER);
     }
 
     public Response<Ranks> submitScore(String leaderboardId, String uniqueIdentifier, Score score) {
         DefaultCommunicator communicator = new DefaultCommunicator();
-        Map<String, String> parameters = new HashMap<String, String>();
-        parameters.put("lid", leaderboardId);
-        parameters.put("username", score.getUsername());
-        parameters.put("userkey", uniqueIdentifier);
-        parameters.put("points", Integer.toString(score.getPoints()));
-        parameters.put("data", score.getData());
-        parameters.put("key", gameKey);
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        addParameter(parameters, "lid", leaderboardId);
+        addParameter(parameters, "username", score.getUsername());
+        addParameter(parameters, "userkey", uniqueIdentifier);
+        addParameter(parameters, "points", Integer.toString(score.getPoints()));
+        addParameter(parameters, "data", score.getData());
+        addParameter(parameters, "key", gameKey);
 
         return communicator.post("scores", getSignedParameters(parameters), RANKS_CONVERTER);
     }
 
     public Response<Integer> getRank(String leaderboardId, String username, String uniqueIdentifier, final int scope) {
         DefaultCommunicator communicator = new DefaultCommunicator();
-        Map<String, String> parameters = new HashMap<String, String>();
-        parameters.put("lid", leaderboardId);
-        parameters.put("username", username);
-        parameters.put("userkey", uniqueIdentifier);
-        parameters.put("scopes", Integer.toString(scope));
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        addParameter(parameters, "lid", leaderboardId);
+        addParameter(parameters, "username", username);
+        addParameter(parameters, "userkey", uniqueIdentifier);
+        addParameter(parameters, "scopes", Integer.toString(scope));
 
         ResponseConverter<Integer> converter = new ResponseConverter<Integer>() {
             public Integer convert(JSONObject source) throws Exception {
@@ -86,40 +87,40 @@ public class DefaultDriver implements Driver {
 
     public Response<Ranks> getRanks(String leaderboardId, String username, String uniqueIdentifier, int[] scopes) {
         DefaultCommunicator communicator = new DefaultCommunicator();
-        Map<String, String> parameters = new HashMap<String, String>();
-        parameters.put("lid", leaderboardId);
-        parameters.put("username", username);
-        parameters.put("userkey", uniqueIdentifier);
-        parameters.put("scopes", encodeArray(scopes));
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        addParameter(parameters, "lid", leaderboardId);
+        addParameter(parameters, "username", username);
+        addParameter(parameters, "userkey", uniqueIdentifier);
+        addParameter(parameters, "scopes", encodeArray(scopes));
 
         return communicator.get("ranks", parameters, RANKS_CONVERTER);
     }
 
     public Response<Achievement> achievementEarned(String achievementId, String username, String uniqueIdentifier) {
         DefaultCommunicator communicator = new DefaultCommunicator();
-        Map<String, String> parameters = new HashMap<String, String>();
-        parameters.put("aid", achievementId);
-        parameters.put("username", username);
-        parameters.put("userKey", uniqueIdentifier);
-        parameters.put("key", gameKey);
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        addParameter(parameters, "aid", achievementId);
+        addParameter(parameters, "username", username);
+        addParameter(parameters, "userKey", uniqueIdentifier);
+        addParameter(parameters, "key", gameKey);
 
         return communicator.post("achievements", getSignedParameters(parameters), ACHIEVEMENT_CONVERTER);
     }
 
     public Response<List<Achievement>> getEarnedAchievements(String username, String uniqueIdentifier) {
         DefaultCommunicator communicator = new DefaultCommunicator();
-        Map<String, String> parameters = new HashMap<String, String>();
-        parameters.put("username", username);
-        parameters.put("userKey", uniqueIdentifier);
-        parameters.put("key", gameKey);
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        addParameter(parameters, "username", username);
+        addParameter(parameters, "userKey", uniqueIdentifier);
+        addParameter(parameters, "key", gameKey);
 
         return communicator.get("achievements", parameters, ACHIEVEMENT_LIST_CONVERTER);
     }
 
-    private Map<String, String> getSignedParameters(Map<String, String> parameters) {
-        SortedMap<String, String> signed = new TreeMap<String, String>(parameters);
+    private Map<String, Object> getSignedParameters(Map<String, Object> parameters) {
+        SortedMap<String, Object> signed = new TreeMap<String, Object>(parameters);
 
-        Map<String, String> result = new HashMap<String, String>(parameters);
+        Map<String, Object> result = new HashMap<String, Object>(parameters);
         result.put("sig", SignatureGenerator.generate(signed, secret));
 
         return result;
@@ -127,6 +128,19 @@ public class DefaultDriver implements Driver {
 
     private static String encodeArray(int[] items) {
         return "????";
+    }
+
+    private static void addArrayParameter(Map<String, Object> parameters, String key, String value) {
+        if (!parameters.containsKey(key)) {
+            parameters.put(key, new ArrayList<String>());
+        }
+
+        List<String> array = (List<String>) parameters.get(key);
+        array.add(value);
+    }
+
+    private static void addParameter(Map<String, Object> parameters, String key, String value) {
+        parameters.put(key, value);
     }
 
     private static final ArrayResponseConverter<List<Achievement>> ACHIEVEMENT_LIST_CONVERTER = new ArrayResponseConverter<List<Achievement>>() {

@@ -13,16 +13,16 @@ import org.json.JSONObject;
 import java.util.Map;
 
 public class DefaultCommunicator {
-    public <T> Response<T> get(String endpoint, Map<String, String> parameters, ResponseConverter<T> converter) {
+    public <T> Response<T> get(String endpoint, Map<String, Object> parameters, ResponseConverter<T> converter) {
 
         return null;
     }
 
-    public <T> Response<T> get(String endpoint, Map<String, String> parameters, ArrayResponseConverter<T> converter) {
+    public <T> Response<T> get(String endpoint, Map<String, Object> parameters, ArrayResponseConverter<T> converter) {
         return null;
     }
 
-    public <T> Response<T> post(String endpoint, Map<String, String> parameters, ResponseConverter<T> converter) {
+    public <T> Response<T> post(String endpoint, Map<String, Object> parameters, ResponseConverter<T> converter) {
         return null;
     }
 
