@@ -118,6 +118,32 @@ public class DefaultDriver implements Driver {
         return communicator.get("achievements", parameters, ACHIEVEMENT_LIST_CONVERTER);
     }
 
+    public void logApplicationStart(String uniqueIdentifier) {
+        DefaultCommunicator communicator = new DefaultCommunicator();
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        addParameter(parameters, "userKey", uniqueIdentifier);
+        addParameter(parameters, "key", gameKey);
+
+        communicator.post("stats", getSignedParameters(parameters), new ResponseConverter<Void>() {
+            public Void convert(JSONObject source) throws Exception {
+                return null;
+            }
+        });
+    }
+
+    public void logError(String subject, String details) {
+        DefaultCommunicator communicator = new DefaultCommunicator();
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("subject", subject);
+        parameters.put("details", details);
+
+        communicator.post("errors", parameters, new ResponseConverter<Void>() {
+            public Void convert(JSONObject source) throws Exception {
+                return null;
+            }
+        });
+    }
+
     private Map<String, Object> getSignedParameters(Map<String, Object> parameters) {
         SortedMap<String, Object> signed = new TreeMap<String, Object>(parameters);
 
