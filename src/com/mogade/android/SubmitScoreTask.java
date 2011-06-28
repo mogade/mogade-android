@@ -17,8 +17,6 @@ public class SubmitScoreTask extends AsyncTask<Void, Void, Response<Ranks>> {
     protected ResponseCallback<Ranks> callback;
 
     public SubmitScoreTask(String gameKey, String secret, String leaderboardId, String uniqueIdentifier, Score score) {
-        Guard.NotNullOrEmpty(gameKey, "game key was empty");
-        Guard.NotNullOrEmpty(secret, "secret was empty");
         Guard.NotNullOrEmpty(leaderboardId, "leaderboard was empty");
         Guard.NotNullOrEmpty(uniqueIdentifier, "uniqueIdentifier was empty");
         Guard.NotNull(score, "score was null");

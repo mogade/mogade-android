@@ -13,6 +13,18 @@ public class DefaultDriver implements Driver {
     private final String gameKey;
     private final String secret;
 
+    public DefaultDriver() {
+        this.gameKey = null;
+        this.secret = null;
+    }
+
+    public DefaultDriver(String gameKey) {
+        Guard.NotNullOrEmpty(gameKey, "Game key is required.");
+
+        this.gameKey = gameKey;
+        this.secret = null;
+    }
+
     public DefaultDriver(String gameKey, String secret) {
         Guard.NotNullOrEmpty(gameKey, "Game key is required.");
         Guard.NotNullOrEmpty(secret, "Secret is required.");

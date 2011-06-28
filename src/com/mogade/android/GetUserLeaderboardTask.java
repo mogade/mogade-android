@@ -17,14 +17,12 @@ public class GetUserLeaderboardTask extends AsyncTask<Void, Void, Response<Leade
 
     protected ResponseCallback<LeaderboardScores> callback;
 
-    public GetUserLeaderboardTask(String gameKey, String secret, String leaderboardId, int scope, String username, String uniqueIdentifier, int records) {
-        Guard.NotNullOrEmpty(gameKey, "game key was empty");
-        Guard.NotNullOrEmpty(secret, "secret was empty");
+    public GetUserLeaderboardTask(String leaderboardId, int scope, String username, String uniqueIdentifier, int records) {
         Guard.NotNullOrEmpty(leaderboardId, "leaderboard was empty");
         Guard.NotNullOrEmpty(username, "username was empty");
         Guard.NotNullOrEmpty(uniqueIdentifier, "uniqueIdentifier was empty");
 
-        this.driver = new DefaultDriver(gameKey, secret);
+        this.driver = new DefaultDriver();
         this.leaderboardId = leaderboardId;
         this.scope = scope;
         this.username = username;

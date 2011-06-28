@@ -17,16 +17,16 @@ public class GetRanksTask extends AsyncTask<Void, Void, Response<Ranks>> {
 
     private ResponseCallback<Ranks> callback;
 
-    public GetRanksTask(String gameKey, String secret, String leaderboardId, String username, String uniqueIdentifier) {
-        this(gameKey, secret, leaderboardId, username, uniqueIdentifier, new int[]{LeaderboardScope.DAILY, LeaderboardScope.OVERALL, LeaderboardScope.WEEKLY, LeaderboardScope.YESTERDAY});
+    public GetRanksTask(String leaderboardId, String username, String uniqueIdentifier) {
+        this(leaderboardId, username, uniqueIdentifier, new int[]{LeaderboardScope.DAILY, LeaderboardScope.OVERALL, LeaderboardScope.WEEKLY, LeaderboardScope.YESTERDAY});
     }
 
-    public GetRanksTask(String gameKey, String secret, String leaderboardId, String username, String uniqueIdentifier, int[] scopes) {
+    public GetRanksTask(String leaderboardId, String username, String uniqueIdentifier, int[] scopes) {
         Guard.NotNullOrEmpty(leaderboardId, "leaderboardId was empty");
         Guard.NotNullOrEmpty(username, "username was empty");
         Guard.NotNullOrEmpty(uniqueIdentifier, "unique identifier was empty");
 
-        this.driver = new DefaultDriver(gameKey, secret);
+        this.driver = new DefaultDriver();
         this.leaderboardId = leaderboardId;
         this.username = username;
         this.uniqueIdentifier = uniqueIdentifier;

@@ -15,12 +15,12 @@ public class GetUserRankTask extends AsyncTask<Void, Void, Response<Integer>> {
 
     private ResponseCallback<Integer> callback;
 
-    public GetUserRankTask(String gameKey, String secret, String leaderboardId, String username, String uniqueIdentifier, int scope) {
+    public GetUserRankTask(String leaderboardId, String username, String uniqueIdentifier, int scope) {
         Guard.NotNullOrEmpty(leaderboardId, "leaderboardId was empty");
         Guard.NotNullOrEmpty(username, "username was empty");
         Guard.NotNullOrEmpty(uniqueIdentifier, "unique identifier was empty");
 
-        this.driver = new DefaultDriver(gameKey, secret);
+        this.driver = new DefaultDriver();
         this.leaderboardId = leaderboardId;
         this.username = username;
         this.uniqueIdentifier = uniqueIdentifier;
