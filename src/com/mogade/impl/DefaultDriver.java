@@ -28,7 +28,6 @@ public class DefaultDriver implements Driver {
         DefaultCommunicator communicator = new DefaultCommunicator();
         Map<String, Object> parameters = new HashMap<String, Object>();
         addParameter(parameters, "lid", leaderboardId);
-        addParameter(parameters, "lid", leaderboardId);
         addParameter(parameters, "scope", Integer.toString(scope));
         addParameter(parameters, "page", Integer.toString(page));
         addParameter(parameters, "records", Integer.toString(records));
