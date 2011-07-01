@@ -29,6 +29,7 @@ public class DefaultCommunicator {
         addQuerystringParameters(parameters, builder);
 
         HttpGet get = new HttpGet(builder.toString());
+        get.addHeader("Accept", "*/*");
 
         return executeRequest(get, converter);
     }
@@ -39,6 +40,7 @@ public class DefaultCommunicator {
         addQuerystringParameters(parameters, builder);
 
         HttpGet get = new HttpGet(builder.toString());
+        get.addHeader("Accept", "*/*");
 
         return executeRequest(get, converter);
     }
@@ -106,11 +108,13 @@ public class DefaultCommunicator {
     }
 
     private static HttpClient getClientInstance() {
-        HttpParams params = new BasicHttpParams();
-        HttpProtocolParams.setUserAgent(params, "mogade-android");
-        HttpProtocolParams.setVersion(params, new ProtocolVersion("HTTP", 1, 1));
+    	
+    	return new DefaultHttpClient();
+        //HttpParams params = new BasicHttpParams();
+        //HttpProtocolParams.setUserAgent(params, "mogade-android");
+        //HttpProtocolParams.setVersion(params, new ProtocolVersion("HTTP", 1, 1));
 
-        return new DefaultHttpClient(params);
+        //return new DefaultHttpClient(params);
     }
 
     private <T> Response<T> executeRequest(HttpUriRequest request, ArrayResponseConverter<T> converter) {
@@ -148,7 +152,6 @@ public class DefaultCommunicator {
             } else {
                 result.setData(converter.convert(response));
             }
-
         } catch (Exception ex) {
             ErrorMessage error = new ErrorMessage();
             error.setMessage(ex.getMessage());
