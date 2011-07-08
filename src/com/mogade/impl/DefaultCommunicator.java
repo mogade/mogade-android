@@ -1,6 +1,8 @@
 package com.mogade.impl;
 
 import android.net.Uri;
+import android.util.Log;
+
 import com.mogade.*;
 import org.apache.http.NameValuePair;
 import org.apache.http.ProtocolVersion;
@@ -109,12 +111,11 @@ public class DefaultCommunicator {
 
     private static HttpClient getClientInstance() {
     	
-    	return new DefaultHttpClient();
-        //HttpParams params = new BasicHttpParams();
-        //HttpProtocolParams.setUserAgent(params, "mogade-android");
-        //HttpProtocolParams.setVersion(params, new ProtocolVersion("HTTP", 1, 1));
+        HttpParams params = new BasicHttpParams();
+        HttpProtocolParams.setUserAgent(params, "mogade-android");
+        HttpProtocolParams.setVersion(params, new ProtocolVersion("HTTP", 1, 1));
 
-        //return new DefaultHttpClient(params);
+        return new DefaultHttpClient(params);
     }
 
     private <T> Response<T> executeRequest(HttpUriRequest request, ArrayResponseConverter<T> converter) {
@@ -123,7 +124,7 @@ public class DefaultCommunicator {
 
         try {
             String responseText = client.execute(request, new BasicResponseHandler());
-
+            Log.v("mogade", responseText);
             JSONArray response = new JSONArray(responseText);
             result.setData(converter.convert(response));
         } catch (Exception ex) {
@@ -144,6 +145,7 @@ public class DefaultCommunicator {
         try {
             String responseText = client.execute(request, new BasicResponseHandler());
 
+            Log.v("mogade", responseText);
             JSONObject response = new JSONObject(responseText);
             if (response.has("error")) {
                 ErrorMessage error = new ErrorMessage();

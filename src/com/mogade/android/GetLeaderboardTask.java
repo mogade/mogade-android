@@ -16,12 +16,10 @@ public class GetLeaderboardTask extends AsyncTask<Void, Void, Response<Leaderboa
 
     protected ResponseCallback<LeaderboardScores> callback;
 
-    public GetLeaderboardTask(String gameKey, String secret, String leaderboardId, int scope, int page, int records) {
-        Guard.NotNullOrEmpty(gameKey, "game key was empty");
-        Guard.NotNullOrEmpty(secret, "secret was empty");
+    public GetLeaderboardTask( String leaderboardId, int scope, int page, int records) {
         Guard.NotNullOrEmpty(leaderboardId, "leaderboard was empty");
 
-        this.driver = new DefaultDriver(gameKey, secret);
+        this.driver = new DefaultDriver();
         this.leaderboardId = leaderboardId;
         this.scope = scope;
         this.page = page;
