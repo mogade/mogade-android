@@ -155,6 +155,14 @@ public class DefaultDriver implements Driver {
         });
     }
 
+    public Response<List<Asset>> getAssets() {
+        DefaultCommunicator communicator = new DefaultCommunicator();
+        Map<String,Object> parameters = new HashMap<String, Object>();
+        addParameter(parameters, "key", gameKey);
+
+        return communicator.get("assets", parameters, ASSET_LIST_CONVERTER);
+    }
+
     private Map<String, Object> getSignedParameters(Map<String, Object> parameters) {
         SortedMap<String, Object> signed = new TreeMap<String, Object>(parameters);
 
@@ -235,6 +243,26 @@ public class DefaultDriver implements Driver {
             achievement.setPoints(source.getInt("points"));
 
             return achievement;
+        }
+    };
+
+    private static final ArrayResponseConverter<List<Asset>> ASSET_LIST_CONVERTER = new ArrayResponseConverter<List<Asset>>() {
+        public List<Asset> convert(JSONArray source) throws Exception {
+            int length = source.length();
+            List<Asset> results = new ArrayList<Asset>(length);
+            for (int i = 0; i < length; i++) {
+                JSONObject jsonAsset = source.getJSONObject(i);
+                Asset asset = new Asset();
+                asset.setName(jsonAsset.getString("name"));
+                asset.setFile(jsonAsset.getString("file"));
+                asset.setMeta(jsonAsset.getString("meta"));
+                asset.setType(jsonAsset.getInt("type"));
+                asset.setDated(DATE_FORMAT.parse(jsonAsset.getString("dated")));
+
+                results.add(asset);
+            }
+
+            return results;
         }
     };
 }

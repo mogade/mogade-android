@@ -1,9 +1,6 @@
 package com.mogade;
 
-import com.mogade.models.Achievement;
-import com.mogade.models.LeaderboardScores;
-import com.mogade.models.Ranks;
-import com.mogade.models.Score;
+import com.mogade.models.*;
 
 import java.util.List;
 
@@ -91,4 +88,10 @@ public interface Driver {
      * @return The achievement
      */
     Response<Achievement> achievementEarned(String achievementId, String username, String uniqueIdentifier);
+
+    /**
+     * Gets the assets for the game
+     * @return The list of assets
+     */
+    Response<List<Asset>> getAssets();
 }
