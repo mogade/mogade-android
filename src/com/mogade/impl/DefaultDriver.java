@@ -129,6 +129,14 @@ public class DefaultDriver implements Driver {
         return communicator.get("achievements", parameters, ACHIEVEMENT_LIST_CONVERTER);
     }
 
+    public Response<List<Achievement>> getAchievements() {
+        DefaultCommunicator communicator = new DefaultCommunicator();
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        addParameter(parameters, "key", gameKey);
+
+        return communicator.get("achievements", parameters, ACHIEVEMENT_LIST_CONVERTER);
+    }
+
     public void logApplicationStart(String uniqueIdentifier) {
         DefaultCommunicator communicator = new DefaultCommunicator();
         Map<String, Object> parameters = new HashMap<String, Object>();

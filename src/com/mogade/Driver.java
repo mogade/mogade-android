@@ -80,6 +80,12 @@ public interface Driver {
     Response<List<Achievement>> getEarnedAchievements(String username, String uniqueIdentifier);
 
     /**
+     * Gets all of the achievements
+     * @return The achievements in the system.
+     */
+    Response<List<Achievement>> getAchievements();
+
+    /**
      * Records that a user earned the specified achievement
      *
      * @param achievementId    The identifier of the achievement that was earned.
