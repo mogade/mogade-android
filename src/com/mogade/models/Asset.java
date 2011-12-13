@@ -2,13 +2,6 @@ package com.mogade.models;
 
 import java.util.Date;
 
-/**
- * Created by IntelliJ IDEA.
- * User: darrenkopp
- * Date: 10/6/11
- * Time: 11:09 PM
- * To change this template use File | Settings | File Templates.
- */
 public class Asset {
     private String name;
     private String file;
