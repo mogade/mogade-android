@@ -6,15 +6,16 @@ import com.mogade.Guard;
 import com.mogade.Response;
 import com.mogade.impl.DefaultDriver;
 import com.mogade.models.Ranks;
+import com.mogade.models.SavedScore;
 import com.mogade.models.Score;
 
-public class SubmitScoreTask extends AsyncTask<Void, Void, Response<Ranks>> {
+public class SubmitScoreTask extends AsyncTask<Void, Void, Response<SavedScore>> {
     protected final Driver driver;
     protected final String leaderboardId;
     protected final String uniqueIdentifier;
     protected final Score score;
 
-    protected ResponseCallback<Ranks> callback;
+    protected ResponseCallback<SavedScore> callback;
 
     public SubmitScoreTask(String gameKey, String secret, String leaderboardId, String uniqueIdentifier, Score score) {
         Guard.NotNullOrEmpty(leaderboardId, "leaderboard was empty");
@@ -27,7 +28,7 @@ public class SubmitScoreTask extends AsyncTask<Void, Void, Response<Ranks>> {
         this.score = score;
     }
 
-    public SubmitScoreTask setCallback(ResponseCallback<Ranks> callback) {
+    public SubmitScoreTask setCallback(ResponseCallback<SavedScore> callback) {
         Guard.NotNull(callback, "callback was null");
 
         this.callback = callback;
@@ -35,12 +36,12 @@ public class SubmitScoreTask extends AsyncTask<Void, Void, Response<Ranks>> {
     }
 
     @Override
-    protected Response<Ranks> doInBackground(Void... voids) {
+    protected Response<SavedScore> doInBackground(Void... voids) {
         return driver.submitScore(leaderboardId, uniqueIdentifier, score);
     }
 
     @Override
-    protected void onPostExecute(Response<Ranks> response) {
+    protected void onPostExecute(Response<SavedScore> response) {
         // invoke callback if specified
         if (callback != null)
             callback.onComplete(response);

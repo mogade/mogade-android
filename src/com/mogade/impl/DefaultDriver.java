@@ -59,7 +59,7 @@ public class DefaultDriver implements Driver {
         return communicator.get("scores", parameters, LEADERBOARD_CONVERTER);
     }
 
-    public Response<Ranks> submitScore(String leaderboardId, String uniqueIdentifier, Score score) {
+    public Response<SavedScore> submitScore(String leaderboardId, String uniqueIdentifier, Score score) {
         DefaultCommunicator communicator = new DefaultCommunicator();
         Map<String, Object> parameters = new HashMap<String, Object>();
         addParameter(parameters, "lid", leaderboardId);
@@ -69,7 +69,7 @@ public class DefaultDriver implements Driver {
         addParameter(parameters, "data", score.getData());
         addParameter(parameters, "key", gameKey);
 
-        return communicator.post("scores", getSignedParameters(parameters), RANKS_CONVERTER);
+        return communicator.post("scores", getSignedParameters(parameters), SAVED_SCORE_CONVERTER);
     }
 
     public Response<Integer> getRank(String leaderboardId, String username, String uniqueIdentifier, final int scope) {
@@ -207,14 +207,34 @@ public class DefaultDriver implements Driver {
             return results;
         }
     };
+    
+    private static final ResponseConverter<SavedScore> SAVED_SCORE_CONVERTER = new ResponseConverter<SavedScore>() {
+        public SavedScore convert(JSONObject source) throws Exception {
+            SavedScore result = new SavedScore();
+            result.Ranks = RANKS_CONVERTER.convert(source.getJSONObject("ranks"));
+            result.Highs = HIGHS_CONVERTER.convert(source.getJSONObject("highs"));
+            return result;
+        }
+    };
+    
+    private static final ResponseConverter<Highs> HIGHS_CONVERTER = new ResponseConverter<Highs>() {
+        public Highs convert(JSONObject source) throws Exception {
+            Highs result = new Highs();
+            result.Daily = source.getBoolean("1");
+            result.Weekly = source.getBoolean("2");
+            result.Overall = source.getBoolean("3");
+
+            return result;
+        }
+    };
 
     private static final ResponseConverter<Ranks> RANKS_CONVERTER = new ResponseConverter<Ranks>() {
         public Ranks convert(JSONObject source) throws Exception {
             Ranks result = new Ranks();
-            result.daily = source.getInt("daily");
-            result.overall = source.getInt("overall");
-            result.weekly = source.getInt("weekly");
-            result.yesterday = source.getInt("yesterday");
+            result.daily = source.getInt("1");
+            result.overall = source.getInt("3");
+            result.weekly = source.getInt("2");
+            result.yesterday = source.getInt("4");
 
             return result;
         }

@@ -36,7 +36,7 @@ public interface Driver {
      * @param score            The score data
      * @return The ranks
      */
-    Response<Ranks> submitScore(String leaderboardId, String uniqueIdentifier, Score score);
+    Response<SavedScore> submitScore(String leaderboardId, String uniqueIdentifier, Score score);
 
     /**
      * Retrieves the ranks for a user on a specific leaderboard.
