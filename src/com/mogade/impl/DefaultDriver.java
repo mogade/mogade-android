@@ -59,6 +59,22 @@ public class DefaultDriver implements Driver {
         return communicator.get("scores", parameters, LEADERBOARD_CONVERTER);
     }
 
+    public Response<LeaderboardScores> getLeaderboard(String leaderboardId, int scope, String username, String uniqueIdentifier) {
+        return null;
+    }
+
+    public Response<LeaderboardScoresWithPlayerStats> getLeaderboardWithPlayerStats(String leaderboardId, int scope, String username, String uniqueIdentifier, int page, int records) {
+        return null;
+    }
+    
+    public Response<Integer> getLeaderboardCount(String leaderboardId, int scope) {
+        return null;
+    }
+
+    public Response<List<Score>> getRivals(String leaderboardId, int scope, String username, String uniqueIdentifier) {
+        return null;
+    }
+
     public Response<SavedScore> submitScore(String leaderboardId, String uniqueIdentifier, Score score) {
         DefaultCommunicator communicator = new DefaultCommunicator();
         Map<String, Object> parameters = new HashMap<String, Object>();
@@ -90,6 +106,11 @@ public class DefaultDriver implements Driver {
 
         return communicator.get("ranks", parameters, converter);
     }
+    
+    public Response<Integer> getRank(String leaderboard, int score, int scope) {
+        
+        return null;
+    }
 
     public Response<Ranks> getRanks(String leaderboardId, String username, String uniqueIdentifier) {
         int[] scopes = new int[]{LeaderboardScope.DAILY, LeaderboardScope.OVERALL, LeaderboardScope.WEEKLY, LeaderboardScope.YESTERDAY};
@@ -106,6 +127,14 @@ public class DefaultDriver implements Driver {
             addArrayParameter(parameters, "scopes[]", Integer.toString(scope));
 
         return communicator.get("ranks", parameters, RANKS_CONVERTER);
+    }
+
+    public Response<Ranks> getRanks(String leaderboardId, int score) {
+        return null;
+    }
+
+    public Response<Ranks> getRanks(String leaderboardId, int score, int[] scopes) {
+        return null;
     }
 
     public Response<Achievement> achievementEarned(String achievementId, String username, String uniqueIdentifier) {
@@ -137,30 +166,34 @@ public class DefaultDriver implements Driver {
         return communicator.get("achievements", parameters, ACHIEVEMENT_LIST_CONVERTER);
     }
 
-    public void logApplicationStart(String uniqueIdentifier) {
+    public Response<Void> logApplicationStart(String uniqueIdentifier) {
         DefaultCommunicator communicator = new DefaultCommunicator();
         Map<String, Object> parameters = new HashMap<String, Object>();
         addParameter(parameters, "userKey", uniqueIdentifier);
         addParameter(parameters, "key", gameKey);
 
-        communicator.post("stats", getSignedParameters(parameters), new ResponseConverter<Void>() {
+        return communicator.post("stats", getSignedParameters(parameters), new ResponseConverter<Void>() {
             public Void convert(JSONObject source) throws Exception {
                 return null;
             }
         });
     }
 
-    public void logError(String subject, String details) {
+    public Response<Void> logError(String subject, String details) {
         DefaultCommunicator communicator = new DefaultCommunicator();
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("subject", subject);
         parameters.put("details", details);
 
-        communicator.post("errors", parameters, new ResponseConverter<Void>() {
+        return communicator.post("errors", parameters, new ResponseConverter<Void>() {
             public Void convert(JSONObject source) throws Exception {
                 return null;
             }
         });
+    }
+    
+    public Response<Void> logCustomStat(int index) {
+        return null;
     }
 
     public Response<List<Asset>> getAssets() {
