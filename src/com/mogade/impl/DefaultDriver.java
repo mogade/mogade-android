@@ -59,20 +59,54 @@ public class DefaultDriver implements Driver {
         return communicator.get("scores", parameters, LEADERBOARD_CONVERTER);
     }
 
-    public Response<LeaderboardScores> getLeaderboard(String leaderboardId, int scope, String username, String uniqueIdentifier) {
-        return null;
+    public Response<Score> getLeaderboard(String leaderboardId, int scope, String username, String uniqueIdentifier) {
+        DefaultCommunicator communicator = new DefaultCommunicator();
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        addParameter(parameters, "lid", leaderboardId);
+        addParameter(parameters, "scope", Integer.toString(scope));
+        addParameter(parameters, "username", username);
+        addParameter(parameters, "userKey", uniqueIdentifier);
+        addParameter(parameters, "records", "1");
+
+        return communicator.get("scores", parameters, SCORE_CONVERTER);
     }
 
     public Response<LeaderboardScoresWithPlayerStats> getLeaderboardWithPlayerStats(String leaderboardId, int scope, String username, String uniqueIdentifier, int page, int records) {
-        return null;
+        DefaultCommunicator communicator = new DefaultCommunicator();
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        addParameter(parameters, "lid", leaderboardId);
+        addParameter(parameters, "with_player", "true");
+        addParameter(parameters, "scope", Integer.toString(scope));
+        addParameter(parameters, "username", username);
+        addParameter(parameters, "userKey", uniqueIdentifier);
+        addParameter(parameters, "records", Integer.toString(records));
+        addParameter(parameters, "page", Integer.toString(page));
+
+        return communicator.get("scores", parameters, LEADERBOARD_SCORES_WITH_PLAYER_STATS_CONVERTER);
     }
     
     public Response<Integer> getLeaderboardCount(String leaderboardId, int scope) {
-        return null;
+        DefaultCommunicator communicator = new DefaultCommunicator();
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        addParameter(parameters, "lid", leaderboardId);
+        addParameter(parameters, "scope", Integer.toString(scope));
+
+        return communicator.get("scores/count", parameters, new ResponseConverter<Integer>() {
+            public Integer convert(JSONObject source) throws Exception {
+                return null;
+            }
+        });
     }
 
     public Response<List<Score>> getRivals(String leaderboardId, int scope, String username, String uniqueIdentifier) {
-        return null;
+        DefaultCommunicator communicator = new DefaultCommunicator();
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        addParameter(parameters, "lid", leaderboardId);
+        addParameter(parameters, "scope", Integer.toString(scope));
+        addParameter(parameters, "username", username);
+        addParameter(parameters, "userKey", uniqueIdentifier);
+
+        return communicator.get("scores/rivals", parameters, SCORE_LIST_CONVERTER);
     }
 
     public Response<SavedScore> submitScore(String leaderboardId, String uniqueIdentifier, Score score) {
@@ -172,11 +206,7 @@ public class DefaultDriver implements Driver {
         addParameter(parameters, "userKey", uniqueIdentifier);
         addParameter(parameters, "key", gameKey);
 
-        return communicator.post("stats", getSignedParameters(parameters), new ResponseConverter<Void>() {
-            public Void convert(JSONObject source) throws Exception {
-                return null;
-            }
-        });
+        return communicator.post("stats", getSignedParameters(parameters), VOID_CONVERTER);
     }
 
     public Response<Void> logError(String subject, String details) {
@@ -185,15 +215,15 @@ public class DefaultDriver implements Driver {
         parameters.put("subject", subject);
         parameters.put("details", details);
 
-        return communicator.post("errors", parameters, new ResponseConverter<Void>() {
-            public Void convert(JSONObject source) throws Exception {
-                return null;
-            }
-        });
+        return communicator.post("errors", parameters, VOID_CONVERTER);
     }
     
     public Response<Void> logCustomStat(int index) {
-        return null;
+        DefaultCommunicator communicator = new DefaultCommunicator();
+        Map<String,Object> parameters = new HashMap<String, Object>(1);
+        addParameter(parameters, "custom", Integer.toString(index));
+        
+        return communicator.post("stats", parameters, VOID_CONVERTER);
     }
 
     public Response<List<Asset>> getAssets() {
@@ -225,6 +255,12 @@ public class DefaultDriver implements Driver {
     private static void addParameter(Map<String, Object> parameters, String key, String value) {
         parameters.put(key, value);
     }
+    
+    private static final ResponseConverter<Void> VOID_CONVERTER = new ResponseConverter<Void>() {
+        public Void convert(JSONObject source) throws Exception {
+            return null;
+        }
+    };
 
     private static final ArrayResponseConverter<List<Achievement>> ACHIEVEMENT_LIST_CONVERTER = new ArrayResponseConverter<List<Achievement>>() {
         public List<Achievement> convert(JSONArray source) throws Exception {
@@ -324,6 +360,41 @@ public class DefaultDriver implements Driver {
             }
 
             return results;
+        }
+    };
+    
+    private static final ResponseConverter<Score> SCORE_CONVERTER = new ResponseConverter<Score>() {
+        public Score convert(JSONObject source) throws Exception {
+            Score result = new Score();
+            result.setUsername(source.getString("userName"));
+            result.setData(source.getString("data"));
+            result.setPoints(source.getInt("points"));
+            result.setDated(DATE_FORMAT.parse(source.getString("dated")));
+            return result;
+        }
+    };
+    
+    private static final ArrayResponseConverter<List<Score>> SCORE_LIST_CONVERTER = new ArrayResponseConverter<List<Score>>() {
+        public List<Score> convert(JSONArray source) throws Exception {
+            int length = source.length();
+            List<Score> results = new ArrayList<Score>(length);
+            for (int i = 0; i < length; i++) {
+                JSONObject jsonScore = source.getJSONObject(i);
+                results.add(SCORE_CONVERTER.convert(jsonScore));
+            }
+
+            return results;
+        }
+    };
+    
+    private static final ResponseConverter<LeaderboardScoresWithPlayerStats> LEADERBOARD_SCORES_WITH_PLAYER_STATS_CONVERTER = new ResponseConverter<LeaderboardScoresWithPlayerStats>() {
+        public LeaderboardScoresWithPlayerStats convert(JSONObject source) throws Exception {
+            LeaderboardScoresWithPlayerStats result = new LeaderboardScoresWithPlayerStats();
+            result.setRank(source.getInt("rank"));
+            result.setPlayer(SCORE_CONVERTER.convert(source.getJSONObject("player")));
+            result.setScores(LEADERBOARD_CONVERTER.convert(source.getJSONObject("scores")));
+            
+            return result;
         }
     };
 }

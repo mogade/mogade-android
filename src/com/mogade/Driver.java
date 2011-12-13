@@ -37,7 +37,7 @@ public interface Driver {
      * @param uniqueIdentifier The unique identifier of the user to limit the scores by
      * @return The response with the leaderboard scores
      */
-    Response<LeaderboardScores> getLeaderboard(String leaderboardId, int scope, String username, String uniqueIdentifier);
+    Response<Score> getLeaderboard(String leaderboardId, int scope, String username, String uniqueIdentifier);
 
      /**
      * Retrieves the leaderboard page with a specific number of records and the player's stats.
