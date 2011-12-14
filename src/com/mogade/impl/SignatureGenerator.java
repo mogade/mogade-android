@@ -3,6 +3,7 @@ package com.mogade.impl;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Formatter;
 import java.util.Map;
 import java.util.SortedMap;
 
@@ -23,14 +24,15 @@ public class SignatureGenerator {
 
     public static String sha1(String value) {
         try {
+            byte[] bytes = MessageDigest.getInstance("SHA-1").digest(value.getBytes("UTF-8"));
+            StringBuilder sb = new StringBuilder(bytes.length * 2);
 
-            byte[] hashed = MessageDigest.getInstance("SHA-1").digest(value.getBytes("UTF-8"));
-            StringBuilder builder = new StringBuilder(hashed.length * 2);
-            for (int i = 0; i < hashed.length; i++) {
-                builder.append(String.format("%1$x", hashed[i]));
+            Formatter formatter = new Formatter(sb);
+            for (byte b : bytes) {
+                formatter.format("%02x", b);
             }
 
-            return builder.toString();
+            return sb.toString();
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e.getMessage());
         } catch (NoSuchAlgorithmException e) {
