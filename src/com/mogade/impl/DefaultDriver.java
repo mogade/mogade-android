@@ -132,9 +132,7 @@ public class DefaultDriver implements Driver {
 
         RawResponseConverter<Integer> converter = new RawResponseConverter<Integer>() {
             public Integer convert(String body) throws Exception {
-                String[] response = body.split("\n");
-
-                return Integer.parseInt(response[scope]);
+                return Integer.parseInt(body);
             }
         };
 
