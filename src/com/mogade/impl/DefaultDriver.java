@@ -130,11 +130,11 @@ public class DefaultDriver implements Driver {
         addParameter(parameters, "userkey", uniqueIdentifier);
         addParameter(parameters, "scopes", Integer.toString(scope));
 
-        ResponseConverter<Integer> converter = new ResponseConverter<Integer>() {
-            public Integer convert(JSONObject source) throws Exception {
-                Ranks rank = RANKS_CONVERTER.convert(source);
+        RawResponseConverter<Integer> converter = new RawResponseConverter<Integer>() {
+            public Integer convert(String body) throws Exception {
+                String[] response = body.split("\n");
 
-                return Ranks.getRankByScope(rank, scope);
+                return Integer.parseInt(response[scope]);
             }
         };
 

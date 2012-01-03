@@ -35,6 +35,17 @@ public class DefaultCommunicator {
         return executeRequest(get, converter);
     }
 
+    public <T> Response<T> get(String endpoint, Map<String, Object> parameters, final RawResponseConverter<T> converter) {
+        Uri.Builder builder = MogadeConfiguration.getUriBuilder();
+        builder.appendPath(endpoint);
+        addQuerystringParameters(parameters, builder);
+
+        HttpGet get = new HttpGet(builder.toString());
+        get.addHeader("Accept", "*/*");
+
+        return executeRequest(get, converter);
+    }
+
     public <T> Response<T> get(String endpoint, Map<String, Object> parameters, ArrayResponseConverter<T> converter) {
         Uri.Builder builder = MogadeConfiguration.getUriBuilder();
         builder.appendPath(endpoint);
@@ -151,6 +162,25 @@ public class DefaultCommunicator {
             } else {
                 result.setData(converter.convert(response));
             }
+        } catch (Exception ex) {
+            ErrorMessage error = new ErrorMessage();
+            error.setMessage(ex.getMessage());
+            error.setInnerException(ex);
+
+            result.setError(error);
+        }
+
+        return result;
+    }
+
+    private <T> Response<T> executeRequest(HttpUriRequest request, RawResponseConverter<T> converter) {
+        BasicResponse<T> result = new BasicResponse<T>();
+        HttpClient client = getClientInstance();
+
+        try {
+            String responseText = client.execute(request, new BasicResponseHandler());
+
+            result.setData(converter.convert(responseText));
         } catch (Exception ex) {
             ErrorMessage error = new ErrorMessage();
             error.setMessage(ex.getMessage());
