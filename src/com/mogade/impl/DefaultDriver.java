@@ -65,7 +65,7 @@ public class DefaultDriver implements Driver {
         addParameter(parameters, "lid", leaderboardId);
         addParameter(parameters, "scope", Integer.toString(scope));
         addParameter(parameters, "username", username);
-        addParameter(parameters, "userKey", uniqueIdentifier);
+        addParameter(parameters, "userkey", uniqueIdentifier);
         addParameter(parameters, "records", "1");
 
         return communicator.get("scores", parameters, SCORE_CONVERTER);
@@ -385,10 +385,12 @@ public class DefaultDriver implements Driver {
     private static final ResponseConverter<Score> SCORE_CONVERTER = new ResponseConverter<Score>() {
         public Score convert(JSONObject source) throws Exception {
             Score result = new Score();
-            result.setUsername(source.getString("userName"));
-            result.setData(source.getString("data"));
+            result.setUsername(source.getString("username"));
+            if (source.has("data"))
+                result.setData(source.getString("data"));
             result.setPoints(source.getInt("points"));
-            result.setDated(DATE_FORMAT.parse(source.getString("dated")));
+            if (source.has("dated"))
+                result.setDated(DATE_FORMAT.parse(source.getString("dated")));
             return result;
         }
     };
