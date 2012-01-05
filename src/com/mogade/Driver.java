@@ -92,12 +92,12 @@ public interface Driver {
 
     /**
      * Retrieves the rank for a score across an individual scope.
-     * @param leaderboard The id of the leaderboard to filter scores to.
+     * @param leaderboardId The id of the leaderboard to filter scores to.
      * @param score       The score to compare.
      * @param scope       The scope to limit scores to.
      * @return            The rank for the score.
      */
-    Response<Integer> getRank(String leaderboard, int score, int scope);
+    Response<Integer> getRank(String leaderboardId, int score, int scope);
 
     /**
      * Retrieves the ranks for a user on a specific leaderboard.

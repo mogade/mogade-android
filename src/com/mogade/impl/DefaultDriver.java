@@ -91,9 +91,9 @@ public class DefaultDriver implements Driver {
         addParameter(parameters, "lid", leaderboardId);
         addParameter(parameters, "scope", Integer.toString(scope));
 
-        return communicator.get("scores/count", parameters, new ResponseConverter<Integer>() {
-            public Integer convert(JSONObject source) throws Exception {
-                return null;
+        return communicator.get("scores/count", parameters, new RawResponseConverter<Integer>() {
+            public Integer convert(String body) throws Exception {
+                return Integer.parseInt(body);
             }
         });
     }
@@ -139,9 +139,21 @@ public class DefaultDriver implements Driver {
         return communicator.get("ranks", parameters, converter);
     }
     
-    public Response<Integer> getRank(String leaderboard, int score, int scope) {
-        
-        return null;
+    public Response<Integer> getRank(String leaderboardId, int score, int scope) {
+
+        DefaultCommunicator communicator = new DefaultCommunicator();
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        addParameter(parameters, "lid", leaderboardId);
+        addParameter(parameters, "score", Integer.toString(score));
+        addParameter(parameters, "scopes", Integer.toString(scope));
+
+        RawResponseConverter<Integer> converter = new RawResponseConverter<Integer>() {
+            public Integer convert(String body) throws Exception {
+                return Integer.parseInt(body);
+            }
+        };
+
+        return communicator.get("ranks", parameters, converter);
     }
 
     public Response<Ranks> getRanks(String leaderboardId, String username, String uniqueIdentifier) {
@@ -162,11 +174,20 @@ public class DefaultDriver implements Driver {
     }
 
     public Response<Ranks> getRanks(String leaderboardId, int score) {
-        return null;
+        int[] scopes = new int[]{LeaderboardScope.DAILY, LeaderboardScope.OVERALL, LeaderboardScope.WEEKLY, LeaderboardScope.YESTERDAY};
+        
+        return getRanks(leaderboardId, score, scopes);
     }
 
     public Response<Ranks> getRanks(String leaderboardId, int score, int[] scopes) {
-        return null;
+        DefaultCommunicator communicator = new DefaultCommunicator();
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        addParameter(parameters, "lid", leaderboardId);
+        addParameter(parameters, "score", Integer.toString(score));
+        for (int scope : scopes)
+            addArrayParameter(parameters, "scopes[]", Integer.toString(scope));
+
+        return communicator.get("ranks", parameters, RANKS_CONVERTER);
     }
 
     public Response<Achievement> achievementEarned(String achievementId, String username, String uniqueIdentifier) {
